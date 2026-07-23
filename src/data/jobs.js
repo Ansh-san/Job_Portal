@@ -1,0 +1,123 @@
+
+const jobs = [
+    {
+        id: 1,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/5968/5968282.png",
+        companyName: "Amazon",
+        posted: "5 days ago",
+        jobTitle: "Senior UI/UX Designer",
+        tag1: "Part-Time",
+        tag2: "Senior Level",
+        salary: "$120/hr",
+        location: "Mumbai, India",
+    },
+
+    {
+        id: 2,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/300/300221.png",
+        companyName: "Google",
+        posted: "7 days ago",
+        jobTitle: "Frontend Developer",
+        tag1: "Full-Time",
+        tag2: "Mid Level",
+        salary: "$180/hr",
+        location: "Bangalore, India",
+    },
+
+    {
+        id: 3,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/732/732221.png",
+        companyName: "Microsoft",
+        posted: "2 days ago",
+        jobTitle: "React Developer",
+        tag1: "Full-Time",
+        tag2: "Junior Level",
+        salary: "$150/hr",
+        location: "Hyderabad, India",
+    },
+
+    {
+        id: 4,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/0/747.png",
+        companyName: "Apple",
+        posted: "3 days ago",
+        jobTitle: "Frontend Engineer",
+        tag1: "Remote",
+        tag2: "Senior Level",
+        salary: "$210/hr",
+        location: "Delhi, India",
+    },
+
+    {
+        id: 5,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/5969/5969020.png",
+        companyName: "Meta",
+        posted: "1 day ago",
+        jobTitle: "UI Developer",
+        tag1: "Contract",
+        tag2: "Mid Level",
+        salary: "$170/hr",
+        location: "Pune, India",
+    },
+
+    {
+        id: 6,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/888/888879.png",
+        companyName: "Netflix",
+        posted: "9 days ago",
+        jobTitle: "React UI Engineer",
+        tag1: "Full-Time",
+        tag2: "Senior Level",
+        salary: "$250/hr",
+        location: "Chennai, India",
+    },
+
+    {
+        id: 7,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/5969/5969124.png",
+        companyName: "Adobe",
+        posted: "6 days ago",
+        jobTitle: "Frontend Developer",
+        tag1: "Remote",
+        tag2: "Junior Level",
+        salary: "$135/hr",
+        location: "Noida, India",
+    },
+
+    {
+        id: 8,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/174/174857.png",
+        companyName: "LinkedIn",
+        posted: "4 days ago",
+        jobTitle: "React.js Developer",
+        tag1: "Full-Time",
+        tag2: "Mid Level",
+        salary: "$165/hr",
+        location: "Gurugram, India",
+    },
+
+    {
+        id: 9,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/5968/5968705.png",
+        companyName: "Uber",
+        posted: "10 days ago",
+        jobTitle: "UI Engineer",
+        tag1: "Hybrid",
+        tag2: "Senior Level",
+        salary: "$190/hr",
+        location: "Kolkata, India",
+    },
+
+    {
+        id: 10,
+        companyLogo: "https://cdn-icons-png.flaticon.com/512/5968/5968841.png",
+        companyName: "Airbnb",
+        posted: "8 days ago",
+        jobTitle: "Frontend Software Engineer",
+        tag1: "Part-Time",
+        tag2: "Junior Level",
+        salary: "$145/hr",
+        location: "Jaipur, India",
+    },
+];
+export default jobs;
