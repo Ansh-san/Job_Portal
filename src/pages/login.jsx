@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, BriefcaseBusiness } from "lucide-react";
-import users from "../data/users";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(""); // ← inline error instead of alert
 
   const handleForgotPassword = () => {
     navigate("/forgotpassword");
@@ -18,21 +20,26 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setError("");
 
-    const user = users.find(
-      (user) => user.email === email.trim() && user.password === password,
-    );
+    if (!email.trim() || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
 
-    if (user) {
-      alert(`Welcome ${user.email}`);
+    const result = login(email, password);
+
+    if (result.success) {
       navigate("/home");
     } else {
-      alert("Invalid Email or Password");
+      setError(result.message);
     }
   };
+
   const handleSignup = () => {
     navigate("/signup");
   };
+
 
   return (
     <div className="login-page">
@@ -138,10 +145,26 @@ const Login = () => {
               </button>
             </div>
 
+            {/* Inline error message */}
+            {error && (
+              <div style={{
+                background: "rgba(239,68,68,0.1)",
+                border: "1px solid rgba(239,68,68,0.35)",
+                borderRadius: "8px",
+                padding: "0.6rem 0.9rem",
+                color: "#f87171",
+                fontSize: "0.85rem",
+                fontWeight: 500,
+              }}>
+                {error}
+              </div>
+            )}
+
             {/* Login Button */}
             <button type="submit" className="login-submit-btn">
               Sign in
             </button>
+
 
             {/* Divider */}
             <div className="login-divider">

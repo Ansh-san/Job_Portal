@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./ApplyForm.css";
 
 const ApplyForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { currentUser } = useAuth();
 
   const location = useLocation();
   const job = location.state;
 
+  // Pre-fill name and email from the logged-in user
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
+    fullName: currentUser?.fullname || "",
+    email: currentUser?.email || "",
+    phone: currentUser?.phone || "",
     college: "",
     experience: "",
     skills: "",
@@ -92,16 +95,35 @@ const ApplyForm = () => {
     setErrors({});
     setSubmitted(true);
 
-    console.log({
+    // ── Save application to localStorage for Dashboard ──────────────────────
+    const application = {
       jobId: id,
-      company: job.companyName,
-      ...formData,
-    });
+      jobTitle: job.jobTitle,
+      companyName: job.companyName,
+      companyLogo: job.companyLogo,
+      location: job.location,
+      salary: job.salary,
+      tag1: job.tag1,
+      tag2: job.tag2,
+      applicantName: formData.fullName,
+      applicantEmail: formData.email,
+      skills: formData.skills,
+      experience: formData.experience,
+      appliedAt: new Date().toISOString(),
+    };
+
+    const existing = JSON.parse(localStorage.getItem("jp_applications") || "[]");
+    localStorage.setItem(
+      "jp_applications",
+      JSON.stringify([...existing, application])
+    );
+    // ────────────────────────────────────────────────────────────────────────
 
     setTimeout(() => {
-      navigate("/");
+      navigate("/dashboard");
     }, 2500);
   };
+
 
   return (
     <div className="application-page">
@@ -254,15 +276,44 @@ const ApplyForm = () => {
           <div className="form-group">
             <label>Upload Resume</label>
 
-            <input
-              type="file"
-              name="resume"
-              accept=".pdf,.doc,.docx"
-              onChange={handleChange}
-            />
+            <div className="file-upload-wrapper">
+              <div className={`file-upload-zone ${formData.resume ? "has-file" : ""}`}>
+                {/* Hidden native file input covers the whole zone */}
+                <input
+                  type="file"
+                  name="resume"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleChange}
+                />
+
+                <span className="file-upload-icon">
+                  {formData.resume ? "✅" : "📄"}
+                </span>
+
+                <div className="file-upload-text">
+                  {formData.resume ? (
+                    <span>File selected — click to change</span>
+                  ) : (
+                    <>
+                      <strong>Click to upload</strong> or drag &amp; drop your resume
+                    </>
+                  )}
+                </div>
+
+                <span className="file-upload-formats">PDF · DOC · DOCX</span>
+
+                {/* Show chosen filename */}
+                {formData.resume && (
+                  <div className="file-chosen-name">
+                    📎 {formData.resume.name}
+                  </div>
+                )}
+              </div>
+            </div>
 
             <small>{errors.resume}</small>
           </div>
+
 
           <div className="form-group">
             <label>Cover Letter</label>
@@ -280,7 +331,7 @@ const ApplyForm = () => {
             <button
               type="button"
               className="cancel-btn"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/home")}
             >
               Cancel
             </button>

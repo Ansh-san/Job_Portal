@@ -2,29 +2,35 @@ import React, { useState } from "react";
 import { Mail, ArrowLeft, BriefcaseBusiness } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "./ForgotPassword.css";
-import users from "../data/users";
+import { useAuth } from "../context/AuthContext";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const { emailExists } = useAuth();
 
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError("");
 
     if (!email.trim()) {
-      alert("Please enter your email.");
-      return;
-    }
-    const user = users.find((u) => u.email === email.trim());
-    if (!user) {
-      alert("user not found");
+      setError("Please enter your email.");
       return;
     }
 
+    if (!emailExists(email)) {
+      setError("No account found with this email address.");
+      return;
+    }
+
+    // Store the verified email so resetpassword page knows which user to update
+    sessionStorage.setItem("jp_resetEmail", email.trim());
     alert("Email verified. Continue to reset password.");
     navigate("/resetpassword");
   };
+
 
   return (
     <div className="forgot-page">
@@ -53,10 +59,17 @@ const ForgotPassword = () => {
             />
           </div>
 
-          <button type="submit" className="forgot-btn" onClick={handleSubmit}>
+          {error && (
+            <p style={{ color: "#f87171", fontSize: "0.85rem", margin: "0.25rem 0" }}>
+              {error}
+            </p>
+          )}
+
+          <button type="submit" className="forgot-btn">
             Continue
           </button>
         </form>
+
 
         <button className="back-btn" onClick={() => navigate("/")}>
           <ArrowLeft size={18} />
