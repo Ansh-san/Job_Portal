@@ -1,49 +1,38 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const connectDB = require("./config/db");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+const jobRoutes = require('./routes/jobRoutes');
+const applicationRoutes = require('./routes/applicationRoutes');
+const userRoutes = require('./routes/userRoutes');
 
-// ─── Connect to MongoDB ───────────────────────────────────────────────────────
-connectDB();
-
-// ─── App Setup ────────────────────────────────────────────────────────────────
 const app = express();
 
-// CORS – allows requests from your Vite frontend (http://localhost:5173)
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
-    credentials: true,
-  })
-);
+// Connect to Database
+connectDB();
 
-// Parse incoming JSON bodies
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/jobs", require("./routes/jobRoutes"));
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api/users', userRoutes);
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
-app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", message: "Job Portal API is running 🚀" });
+// Serve uploads statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Basic Route
+app.get('/', (req, res) => {
+  res.send('API is running...');
 });
 
-// ─── 404 Handler ─────────────────────────────────────────────────────────────
-app.use((req, res) => {
-  res.status(404).json({ message: `Route ${req.originalUrl} not found` });
-});
-
-// ─── Global Error Handler ────────────────────────────────────────────────────
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    message: err.message || "Internal Server Error",
-  });
-});
-
-// ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

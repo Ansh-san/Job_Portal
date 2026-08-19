@@ -1,55 +1,39 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const JobSchema = new mongoose.Schema(
-  {
-    jobTitle: {
-      type: String,
-      required: [true, "Job title is required"],
-      trim: true,
-    },
-    companyName: {
-      type: String,
-      required: [true, "Company name is required"],
-      trim: true,
-    },
-    companyLogo: {
-      type: String,
-      default: "",
-    },
-    location: {
-      type: String,
-      required: [true, "Location is required"],
-      trim: true,
-    },
-    salary: {
-      type: String,
-      default: "Competitive",
-    },
-    tag1: {
-      type: String,
-      enum: ["Full-Time", "Part-Time", "Remote", "Hybrid", "Contract", "Internship", "Freelance"],
-      default: "Full-Time",
-    },
-    tag2: {
-      type: String,
-      enum: ["Fresher", "Junior Level", "Mid Level", "Senior Level", "Lead"],
-      default: "Mid Level",
-    },
-    posted: {
-      type: String,
-      default: "Just now",
-    },
-    // Reference to the recruiter who posted this job
-    postedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
+const jobSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
   },
-  { timestamps: true }
-);
+  description: {
+    type: String,
+    required: true,
+  },
+  company: {
+    type: String,
+    required: true,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  salaryRange: {
+    type: String,
+  },
+  jobType: {
+    type: String,
+    enum: ['full-time', 'part-time', 'internship', 'remote'],
+    required: true,
+  },
+  postedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-module.exports = mongoose.model("Job", JobSchema);
+module.exports = mongoose.model('Job', jobSchema);

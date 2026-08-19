@@ -1,39 +1,40 @@
-import Login from "./pages/login";
-import Home from "./pages/Home";
-import ApplyForm from "./components/ApplyForm";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Signup from "./pages/signup";
-import ForgotPassword from "./pages/forgotpassword";
-import ResetPassword from "./pages/resetpassword";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./pages/Dashboard";
-import { useAuth } from "./context/AuthContext";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { GlobalErrorBoundary } from './components/GlobalErrorBoundary';
 
-// Redirect already-logged-in users away from the login/signup screens
-const PublicOnlyRoute = ({ children }) => {
-  const { currentUser } = useAuth();
-  return currentUser ? <Navigate to="/home" replace /> : children;
-};
+import Login from './pages/Login';
+import Register from './pages/Register';
+import JobListings from './pages/JobListings';
+import JobDetails from './pages/JobDetails';
+import JobseekerDashboard from './pages/JobseekerDashboard';
+import EmployerDashboard from './pages/EmployerDashboard';
+import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public routes – redirect to /home if already logged in */}
-        <Route path="/" element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
-        <Route path="/signup" element={<PublicOnlyRoute><Signup /></PublicOnlyRoute>} />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/resetpassword" element={<ResetPassword />} />
+    <GlobalErrorBoundary>
+      <Router>
+        <Toaster position="top-right" />
+        <Routes>
+          <Route path="/" element={<JobListings />} />
+          <Route path="/jobs/:id" element={<JobDetails />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
+          <Route element={<ProtectedRoute requiredRole="jobseeker" />}>
+            <Route path="/jobseeker/dashboard" element={<JobseekerDashboard />} />
+          </Route>
+          
+          <Route element={<ProtectedRoute requiredRole="employer" />}>
+            <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+          </Route>
 
-        {/* Protected routes – redirect to / if not logged in */}
-        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/apply/:id" element={<ProtectedRoute><ApplyForm /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </GlobalErrorBoundary>
   );
 };
 

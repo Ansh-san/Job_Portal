@@ -1,27 +1,21 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const {
-  getAllJobs,
-  getJobById,
   createJob,
+  getJobs,
+  getJobById,
   updateJob,
   deleteJob,
-} = require("../controllers/jobController");
-const { protect, restrictTo } = require("../middleware/authMiddleware");
+} = require('../controllers/jobController');
+const { protect, requireRole } = require('../middleware/authMiddleware');
 
-// GET /api/jobs – All users (logged in) can view jobs
-router.get("/", protect, getAllJobs);
+router.route('/')
+  .get(getJobs)
+  .post(protect, requireRole('employer'), createJob);
 
-// GET /api/jobs/:id – Get a specific job
-router.get("/:id", protect, getJobById);
-
-// POST /api/jobs – Only Recruiters or Admins can post jobs
-router.post("/", protect, restrictTo("Recruiter", "Admin"), createJob);
-
-// PUT /api/jobs/:id – Update a job (Recruiter/Admin only)
-router.put("/:id", protect, restrictTo("Recruiter", "Admin"), updateJob);
-
-// DELETE /api/jobs/:id – Delete a job (Recruiter/Admin only)
-router.delete("/:id", protect, restrictTo("Recruiter", "Admin"), deleteJob);
+router.route('/:id')
+  .get(getJobById)
+  .put(protect, requireRole('employer'), updateJob)
+  .delete(protect, requireRole('employer'), deleteJob);
 
 module.exports = router;
