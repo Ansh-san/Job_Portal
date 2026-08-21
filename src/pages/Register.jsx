@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useNavigate, Link } from 'react-router-dom';
-import authService from '../api/authService';
+import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const registerSchema = z.object({
@@ -15,6 +15,7 @@ const registerSchema = z.object({
 
 const Register = () => {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,109 +27,110 @@ const Register = () => {
   });
 
   const onSubmit = async (data) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const res = await authService.register(data);
-      
-      // Redirect based on role
+    setIsLoading(true);
+    setError(null);
+    const res = await signup(data);
+    
+    if (res.success) {
       toast.success('Account created successfully!');
-      if (res.role === 'employer') {
+      if (res.user.role === 'employer') {
         navigate('/employer/dashboard');
       } else {
         navigate('/jobseeker/dashboard');
       }
-    } catch (err) {
-      const errMsg = err.response?.data?.message || 'Registration failed. Please try again.';
-      setError(errMsg);
-      toast.error(errMsg);
-    } finally {
-      setIsLoading(false);
+    } else {
+      setError(res.message);
+      toast.error(res.message);
     }
+    setIsLoading(false);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 py-10">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl">
-        <h2 className="text-3xl font-extrabold text-center text-gray-900">Create Account</h2>
-        <p className="text-sm text-center text-gray-500">Join JobPortal to find your next opportunity</p>
+    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] animate-fade-in relative py-10">
+      <div className="absolute inset-0 bg-gradient-to-tl from-primary-50/50 via-white to-primary-100/30 -z-10" />
+      <div className="w-full max-w-md p-8 sm:p-10 space-y-8 glass rounded-3xl animate-slide-up mx-4">
+        
+        <div className="text-center space-y-2">
+          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Create Account</h2>
+          <p className="text-slate-500 font-medium">Join JobPortal to find your next opportunity</p>
+        </div>
         
         {error && (
-          <div className="p-4 text-sm font-medium text-red-800 bg-red-100 rounded-lg">
+          <div className="p-4 text-sm font-semibold text-red-700 bg-red-50 border border-red-100 rounded-xl">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700">Full Name</label>
+          <div className="space-y-1">
+            <label className="block text-sm font-semibold text-slate-700 ml-1">Full Name</label>
             <input
               type="text"
               {...register('name')}
-              className={`w-full px-4 py-3 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${errors.name ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-gray-50'}`}
+              className={`input-field ${errors.name ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500' : ''}`}
               placeholder="John Doe"
             />
-            {errors.name && <p className="mt-1.5 text-sm text-red-500">{errors.name.message}</p>}
+            {errors.name && <p className="ml-1 text-sm text-red-500 font-medium">{errors.name.message}</p>}
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700">Email Address</label>
+          <div className="space-y-1">
+            <label className="block text-sm font-semibold text-slate-700 ml-1">Email Address</label>
             <input
               type="email"
               {...register('email')}
-              className={`w-full px-4 py-3 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${errors.email ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-gray-50'}`}
+              className={`input-field ${errors.email ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500' : ''}`}
               placeholder="you@example.com"
             />
-            {errors.email && <p className="mt-1.5 text-sm text-red-500">{errors.email.message}</p>}
+            {errors.email && <p className="ml-1 text-sm text-red-500 font-medium">{errors.email.message}</p>}
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700">Password</label>
+          <div className="space-y-1">
+            <label className="block text-sm font-semibold text-slate-700 ml-1">Password</label>
             <input
               type="password"
               {...register('password')}
-              className={`w-full px-4 py-3 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${errors.password ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-gray-50'}`}
+              className={`input-field ${errors.password ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500' : ''}`}
               placeholder="••••••••"
             />
-            {errors.password && <p className="mt-1.5 text-sm text-red-500">{errors.password.message}</p>}
+            {errors.password && <p className="ml-1 text-sm text-red-500 font-medium">{errors.password.message}</p>}
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">I am a...</label>
+          <div className="space-y-2 pt-2">
+            <label className="block text-sm font-semibold text-slate-700 ml-1">I am a...</label>
             <div className="flex gap-4">
-              <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors w-1/2">
+              <label className="flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors w-1/2">
                 <input
                   type="radio"
                   value="jobseeker"
                   {...register('role')}
-                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  className="w-4 h-4 text-primary-600 border-slate-300 focus:ring-primary-500"
                 />
-                <span className="ml-2 text-sm font-medium text-gray-700">Job Seeker</span>
+                <span className="ml-3 text-sm font-semibold text-slate-700">Job Seeker</span>
               </label>
-              <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors w-1/2">
+              <label className="flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors w-1/2">
                 <input
                   type="radio"
                   value="employer"
                   {...register('role')}
-                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  className="w-4 h-4 text-primary-600 border-slate-300 focus:ring-primary-500"
                 />
-                <span className="ml-2 text-sm font-medium text-gray-700">Employer</span>
+                <span className="ml-3 text-sm font-semibold text-slate-700">Employer</span>
               </label>
             </div>
-            {errors.role && <p className="mt-1.5 text-sm text-red-500">{errors.role.message}</p>}
+            {errors.role && <p className="ml-1 text-sm text-red-500 font-medium">{errors.role.message}</p>}
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-4 py-3 text-white font-bold bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 transition-all shadow-md"
+            className="w-full btn-primary disabled:opacity-70 disabled:pointer-events-none mt-4"
           >
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-600">
-          Already have an account? <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-800 transition-colors">Sign in</Link>
+        <p className="text-center text-slate-600 font-medium">
+          Already have an account? <Link to="/login" className="text-primary-600 hover:text-primary-700 transition-colors">Sign in</Link>
         </p>
       </div>
     </div>

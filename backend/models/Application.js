@@ -16,6 +16,23 @@ const applicationSchema = new mongoose.Schema({
     enum: ['applied', 'shortlisted', 'rejected', 'hired'],
     default: 'applied',
   },
+  coverLetter: {
+    type: String,
+  },
+  skills: {
+    type: [String],
+    default: [],
+  },
+  experience: {
+    type: String,
+  },
+  resumeText: {
+    type: String,
+  },
+  matchScore: {
+    type: Number,
+    default: 0,
+  },
   appliedAt: {
     type: Date,
     default: Date.now,

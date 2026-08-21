@@ -12,8 +12,7 @@ const JobDetails = () => {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [applyLoading, setApplyLoading] = useState(false);
-  const [applyMessage, setApplyMessage] = useState(null);
+
 
   const userInfoString = localStorage.getItem('userInfo');
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
@@ -39,19 +38,7 @@ const JobDetails = () => {
       return;
     }
     
-    try {
-      setApplyLoading(true);
-      setApplyMessage(null);
-      await applicationService.applyForJob(id);
-      setApplyMessage({ type: 'success', text: 'Successfully applied for this job!' });
-      toast.success('Successfully applied for this job!');
-    } catch (err) {
-      const errMsg = err.response?.data?.message || 'Failed to apply. You may have already applied.';
-      setApplyMessage({ type: 'error', text: errMsg });
-      toast.error(errMsg);
-    } finally {
-      setApplyLoading(false);
-    }
+    navigate(`/apply/${id}`, { state: job });
   };
 
   if (loading) return (
@@ -102,20 +89,15 @@ const JobDetails = () => {
               Posted on {new Date(job.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
 
-            {applyMessage && (
-              <div className={`p-4 mb-6 rounded-xl font-medium ${applyMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                {applyMessage.text}
-              </div>
-            )}
+
 
             <div className="flex items-center">
               {isJobseeker ? (
                 <button
                   onClick={handleApply}
-                  disabled={applyLoading || applyMessage?.type === 'success'}
-                  className="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 transition-all shadow-lg transform active:scale-95"
+                  className="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all shadow-lg transform active:scale-95"
                 >
-                  {applyLoading ? 'Applying...' : applyMessage?.type === 'success' ? 'Applied Successfully' : 'Apply Now'}
+                  Apply Now
                 </button>
               ) : userInfo ? (
                 <p className="text-gray-500 font-medium italic bg-gray-50 p-4 rounded-lg w-full text-center sm:text-left">

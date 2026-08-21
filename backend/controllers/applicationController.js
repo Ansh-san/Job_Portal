@@ -8,6 +8,7 @@ const applyForJob = async (req, res) => {
   try {
     const jobId = req.params.jobId;
     const applicantId = req.user._id;
+    const { coverLetter, experience, skills, resumeText } = req.body;
 
     // Check if job exists
     const job = await Job.findById(jobId);
@@ -25,9 +26,29 @@ const applyForJob = async (req, res) => {
       return res.status(400).json({ message: 'You have already applied for this job' });
     }
 
+    // Calculate Match Score
+    let matchScore = 0;
+    const applicantSkills = typeof skills === 'string' 
+      ? skills.split(',').map(s => s.trim().toLowerCase()) 
+      : (Array.isArray(skills) ? skills.map(s => s.toLowerCase()) : []);
+      
+    const jobSkills = job.skillsRequired || [];
+    
+    if (jobSkills.length > 0 && applicantSkills.length > 0) {
+      const matched = jobSkills.filter(js => 
+        applicantSkills.some(as => as.includes(js.toLowerCase()) || js.toLowerCase().includes(as))
+      );
+      matchScore = Math.round((matched.length / jobSkills.length) * 100);
+    }
+
     const application = await Application.create({
       job: jobId,
       applicant: applicantId,
+      coverLetter,
+      experience,
+      skills: applicantSkills,
+      resumeText,
+      matchScore
     });
 
     res.status(201).json(application);

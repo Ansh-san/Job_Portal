@@ -1,7 +1,7 @@
 import api from './axios';
 
-const applyForJob = async (jobId) => {
-  const response = await api.post(`/applications/${jobId}`);
+const applyForJob = async (jobId, formData = {}) => {
+  const response = await api.post(`/applications/${jobId}`, formData);
   return response.data;
 };
 

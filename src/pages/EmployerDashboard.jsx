@@ -257,13 +257,42 @@ const EmployerDashboard = () => {
                         <div className="flex-grow">
                           <p className="font-extrabold text-xl text-gray-900 mb-1">{app.applicant.name}</p>
                           <p className="text-gray-500 font-medium text-sm mb-3">📧 {app.applicant.email}</p>
-                          {app.applicant.resumeUrl ? (
-                            <a href={`http://localhost:5000${app.applicant.resumeUrl}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-bold text-sm hover:underline bg-blue-50 px-4 py-2 rounded-lg inline-flex items-center transition-colors">
-                              📄 View Resume
-                            </a>
-                          ) : (
-                            <span className="text-gray-400 text-sm italic">No resume attached</span>
-                          )}
+                          
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            <span className="bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded-full text-xs">
+                              {app.matchScore}% Match
+                            </span>
+                            <span className="bg-gray-100 text-gray-700 font-medium px-3 py-1 rounded-full text-xs">
+                              Exp: {app.experience || 'N/A'}
+                            </span>
+                          </div>
+                          
+                          <div className="mb-4">
+                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Skills</h4>
+                            <div className="flex flex-wrap gap-1">
+                              {app.skills && app.skills.map((s, i) => (
+                                <span key={i} className="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">{s}</span>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap gap-3 mt-4">
+                            {app.applicant.resumeUrl && (
+                              <a href={`http://localhost:5000${app.applicant.resumeUrl}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-bold text-sm hover:underline bg-blue-50 px-4 py-2 rounded-lg inline-flex items-center transition-colors">
+                                📄 View Uploaded Resume
+                              </a>
+                            )}
+                            {app.resumeText && (
+                              <button onClick={() => alert(app.resumeText)} className="text-purple-600 font-bold text-sm hover:underline bg-purple-50 px-4 py-2 rounded-lg inline-flex items-center transition-colors">
+                                ✨ View Generated Resume
+                              </button>
+                            )}
+                            {app.coverLetter && (
+                              <button onClick={() => alert(app.coverLetter)} className="text-gray-600 font-bold text-sm hover:underline bg-gray-100 px-4 py-2 rounded-lg inline-flex items-center transition-colors">
+                                ✉️ View Cover Letter
+                              </button>
+                            )}
+                          </div>
                         </div>
                         
                         <div className="flex flex-col items-start md:items-end gap-2 bg-gray-50 p-4 rounded-xl border border-gray-100 min-w-[200px]">

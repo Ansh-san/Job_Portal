@@ -20,6 +20,15 @@ const jobSchema = new mongoose.Schema({
   salaryRange: {
     type: String,
   },
+  skillsRequired: {
+    type: [String],
+    default: [],
+  },
+  experienceLevel: {
+    type: String,
+    enum: ['fresher', '0-1 years', '1-3 years', '3-5 years', '5+ years', 'entry-level', 'mid-level', 'senior-level'],
+    default: 'entry-level',
+  },
   jobType: {
     type: String,
     enum: ['full-time', 'part-time', 'internship', 'remote'],

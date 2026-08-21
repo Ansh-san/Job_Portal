@@ -144,6 +144,12 @@ const JobseekerDashboard = () => {
                           `}>
                             {app.status}
                           </span>
+                          
+                          {app.matchScore !== undefined && (
+                            <span className="mt-2 block text-right text-xs font-bold text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100 w-max ml-auto">
+                              {app.matchScore}% Match
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
