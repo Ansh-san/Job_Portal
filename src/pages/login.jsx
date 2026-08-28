@@ -42,12 +42,12 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] animate-fade-in relative">
-      <div className="absolute inset-0 bg-gradient-to-tr from-primary-50/50 via-white to-primary-100/30 -z-10" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-primary-50/50 via-slate-900 to-primary-100/30 -z-10" />
       <div className="w-full max-w-md p-8 sm:p-10 space-y-8 glass rounded-3xl animate-slide-up mt-8 mb-8 mx-4">
         
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Welcome Back</h2>
-          <p className="text-slate-500 font-medium">Sign in to your JobPortal account</p>
+          <h2 className="text-3xl font-extrabold text-slate-100 tracking-tight">Welcome Back</h2>
+          <p className="text-slate-400 font-medium">Sign in to your JobPortal account</p>
         </div>
         
         {error && (
@@ -58,7 +58,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="space-y-1">
-            <label className="block text-sm font-semibold text-slate-700 ml-1">Email Address</label>
+            <label className="block text-sm font-semibold text-slate-300 ml-1">Email Address</label>
             <input
               type="email"
               {...register('email')}
@@ -69,7 +69,7 @@ const Login = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-sm font-semibold text-slate-700 ml-1">Password</label>
+            <label className="block text-sm font-semibold text-slate-300 ml-1">Password</label>
             <input
               type="password"
               {...register('password')}
@@ -88,7 +88,7 @@ const Login = () => {
           </button>
         </form>
 
-        <p className="text-center text-slate-600 font-medium">
+        <p className="text-center text-slate-400 font-medium">
           Don't have an account? <Link to="/register" className="text-primary-600 hover:text-primary-700 transition-colors">Sign up</Link>
         </p>
       </div>

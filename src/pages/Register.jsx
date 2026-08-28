@@ -47,12 +47,12 @@ const Register = () => {
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] animate-fade-in relative py-10">
-      <div className="absolute inset-0 bg-gradient-to-tl from-primary-50/50 via-white to-primary-100/30 -z-10" />
+      <div className="absolute inset-0 bg-gradient-to-tl from-primary-50/50 via-slate-900 to-primary-100/30 -z-10" />
       <div className="w-full max-w-md p-8 sm:p-10 space-y-8 glass rounded-3xl animate-slide-up mx-4">
         
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Create Account</h2>
-          <p className="text-slate-500 font-medium">Join JobPortal to find your next opportunity</p>
+          <h2 className="text-3xl font-extrabold text-slate-100 tracking-tight">Create Account</h2>
+          <p className="text-slate-400 font-medium">Join JobPortal to find your next opportunity</p>
         </div>
         
         {error && (
@@ -63,7 +63,7 @@ const Register = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="space-y-1">
-            <label className="block text-sm font-semibold text-slate-700 ml-1">Full Name</label>
+            <label className="block text-sm font-semibold text-slate-300 ml-1">Full Name</label>
             <input
               type="text"
               {...register('name')}
@@ -74,7 +74,7 @@ const Register = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-sm font-semibold text-slate-700 ml-1">Email Address</label>
+            <label className="block text-sm font-semibold text-slate-300 ml-1">Email Address</label>
             <input
               type="email"
               {...register('email')}
@@ -85,7 +85,7 @@ const Register = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-sm font-semibold text-slate-700 ml-1">Password</label>
+            <label className="block text-sm font-semibold text-slate-300 ml-1">Password</label>
             <input
               type="password"
               {...register('password')}
@@ -96,25 +96,25 @@ const Register = () => {
           </div>
 
           <div className="space-y-2 pt-2">
-            <label className="block text-sm font-semibold text-slate-700 ml-1">I am a...</label>
+            <label className="block text-sm font-semibold text-slate-300 ml-1">I am a...</label>
             <div className="flex gap-4">
-              <label className="flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors w-1/2">
+              <label className="flex items-center p-4 border border-slate-700 rounded-xl cursor-pointer hover:bg-slate-800 transition-colors w-1/2">
                 <input
                   type="radio"
                   value="jobseeker"
                   {...register('role')}
                   className="w-4 h-4 text-primary-600 border-slate-300 focus:ring-primary-500"
                 />
-                <span className="ml-3 text-sm font-semibold text-slate-700">Job Seeker</span>
+                <span className="ml-3 text-sm font-semibold text-slate-300">Job Seeker</span>
               </label>
-              <label className="flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors w-1/2">
+              <label className="flex items-center p-4 border border-slate-700 rounded-xl cursor-pointer hover:bg-slate-800 transition-colors w-1/2">
                 <input
                   type="radio"
                   value="employer"
                   {...register('role')}
                   className="w-4 h-4 text-primary-600 border-slate-300 focus:ring-primary-500"
                 />
-                <span className="ml-3 text-sm font-semibold text-slate-700">Employer</span>
+                <span className="ml-3 text-sm font-semibold text-slate-300">Employer</span>
               </label>
             </div>
             {errors.role && <p className="ml-1 text-sm text-red-500 font-medium">{errors.role.message}</p>}
@@ -129,7 +129,7 @@ const Register = () => {
           </button>
         </form>
 
-        <p className="text-center text-slate-600 font-medium">
+        <p className="text-center text-slate-400 font-medium">
           Already have an account? <Link to="/login" className="text-primary-600 hover:text-primary-700 transition-colors">Sign in</Link>
         </p>
       </div>

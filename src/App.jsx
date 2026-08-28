@@ -18,7 +18,7 @@ const App = () => {
   return (
     <GlobalErrorBoundary>
       <Router>
-        <div className="flex flex-col min-h-screen bg-slate-50">
+        <div className="flex flex-col min-h-screen bg-slate-800">
           <Toaster position="top-right" toastOptions={{ className: 'glass' }} />
           <Navbar />
           <main className="flex-grow">

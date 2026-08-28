@@ -20,11 +20,17 @@ const updateApplicationStatus = async (id, status) => {
   return response.data;
 };
 
+const getEmployerAnalytics = async () => {
+  const response = await api.get('/applications/analytics/employer');
+  return response.data;
+};
+
 const applicationService = {
   applyForJob,
   getMyApplications,
   getJobApplicants,
   updateApplicationStatus,
+  getEmployerAnalytics,
 };
 
 export default applicationService;

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import jobService from '../api/jobService';
 import applicationService from '../api/applicationService';
+import userService from '../api/userService';
 import toast from 'react-hot-toast';
 import { JobDetailsSkeleton } from '../components/Skeleton';
+import { Bookmark } from 'lucide-react';
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -12,7 +14,8 @@ const JobDetails = () => {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
+  const [isSaved, setIsSaved] = useState(false);
 
   const userInfoString = localStorage.getItem('userInfo');
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
@@ -30,7 +33,15 @@ const JobDetails = () => {
       }
     };
     fetchJob();
-  }, [id]);
+    
+    if (isJobseeker) {
+      userService.getUserProfile().then(data => {
+        if (data && data.savedJobs) {
+          setIsSaved(data.savedJobs.some(j => (j._id || j) === id));
+        }
+      }).catch(err => console.error(err));
+    }
+  }, [id, isJobseeker]);
 
   const handleApply = async () => {
     if (!userInfo) {
@@ -41,8 +52,22 @@ const JobDetails = () => {
     navigate(`/apply/${id}`, { state: job });
   };
 
+  const handleSaveJob = async () => {
+    if (!isJobseeker) {
+      toast.error('Please log in as a jobseeker to save jobs');
+      return;
+    }
+    try {
+      const res = await userService.toggleSaveJob(id);
+      setIsSaved(res.savedJobs.some(j => (j._id || j) === id));
+      toast.success(res.message);
+    } catch (err) {
+      toast.error('Failed to save job');
+    }
+  };
+
   if (loading) return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6">
+    <div className="min-h-screen bg-slate-950 py-10 px-4 sm:px-6">
       <JobDetailsSkeleton />
     </div>
   );
@@ -54,8 +79,8 @@ const JobDetails = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6">
-      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+    <div className="min-h-screen bg-slate-950 py-10 px-4 sm:px-6">
+      <div className="max-w-4xl mx-auto bg-slate-900 rounded-3xl shadow-xl overflow-hidden">
         
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-700 to-blue-500 p-8 sm:p-12 text-white">
@@ -79,28 +104,37 @@ const JobDetails = () => {
 
         {/* Content */}
         <div className="p-8 sm:p-12">
-          <h2 className="text-2xl font-extrabold text-gray-900 mb-6">Job Description</h2>
-          <div className="text-gray-700 whitespace-pre-wrap leading-relaxed text-lg mb-10">
+          <h2 className="text-2xl font-extrabold text-slate-100 mb-6">Job Description</h2>
+          <div className="text-slate-300 whitespace-pre-wrap leading-relaxed text-lg mb-10">
             {job.description}
           </div>
 
-          <div className="border-t border-gray-100 pt-8">
-            <p className="text-sm font-medium text-gray-400 mb-6">
+          <div className="border-t border-slate-800 pt-8">
+            <p className="text-sm font-medium text-slate-500 mb-6">
               Posted on {new Date(job.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
 
 
 
-            <div className="flex items-center">
+            <div className="flex items-center gap-4">
               {isJobseeker ? (
-                <button
-                  onClick={handleApply}
-                  className="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all shadow-lg transform active:scale-95"
-                >
-                  Apply Now
-                </button>
+                <>
+                  <button
+                    onClick={handleApply}
+                    className="flex-1 sm:flex-none sm:w-auto px-10 py-4 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all shadow-lg transform active:scale-95"
+                  >
+                    Apply Now
+                  </button>
+                  <button
+                    onClick={handleSaveJob}
+                    className={`flex items-center justify-center p-4 rounded-xl transition-all shadow-lg transform active:scale-95 ${isSaved ? 'bg-blue-900 text-blue-600 border-2 border-blue-800' : 'bg-slate-900 text-slate-400 hover:bg-slate-600 border-2 border-transparent'}`}
+                    title={isSaved ? "Remove from saved" : "Save this job"}
+                  >
+                    <Bookmark size={24} fill={isSaved ? "currentColor" : "none"} />
+                  </button>
+                </>
               ) : userInfo ? (
-                <p className="text-gray-500 font-medium italic bg-gray-50 p-4 rounded-lg w-full text-center sm:text-left">
+                <p className="text-slate-400 font-medium italic bg-slate-950 p-4 rounded-lg w-full text-center sm:text-left">
                   Employers cannot apply for jobs. Please log in as a jobseeker.
                 </p>
               ) : (

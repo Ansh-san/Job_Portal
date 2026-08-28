@@ -37,7 +37,7 @@ const Navbar = () => {
             <div className="bg-primary-600 text-white p-2 rounded-xl group-hover:scale-105 transition-transform shadow-sm shadow-primary-500/20">
               <BriefcaseBusiness size={20} />
             </div>
-            <span className="font-extrabold text-xl tracking-tight text-slate-800">
+            <span className="font-extrabold text-xl tracking-tight text-slate-200">
               Job<span className="text-primary-600">Portal</span>
             </span>
           </div>
@@ -46,7 +46,7 @@ const Navbar = () => {
           <div className="hidden md:flex gap-1">
             <button
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                location.pathname === "/" ? "bg-primary-50 text-primary-700" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                location.pathname === "/" ? "bg-primary-50 text-primary-700" : "text-slate-400 hover:bg-slate-700 hover:text-slate-900"
               }`}
               onClick={() => navigate("/")}
             >
@@ -55,7 +55,7 @@ const Navbar = () => {
             {currentUser && (
               <button
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                  location.pathname.includes("/dashboard") ? "bg-primary-50 text-primary-700" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  location.pathname.includes("/dashboard") ? "bg-primary-50 text-primary-700" : "text-slate-400 hover:bg-slate-700 hover:text-slate-900"
                 }`}
                 onClick={() => navigate(currentUser.role === 'employer' ? "/employer/dashboard" : "/jobseeker/dashboard")}
               >
@@ -68,21 +68,21 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             {currentUser ? (
               <>
-                <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200">
-                  <div className="bg-white text-primary-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
+                <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700">
+                  <div className="bg-slate-900 text-primary-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
                     {getInitials()}
                   </div>
                   <div className="flex flex-col pr-2">
-                    <span className="text-sm font-semibold text-slate-800 leading-tight">
+                    <span className="text-sm font-semibold text-slate-200 leading-tight">
                       {currentUser.name || currentUser.fullname || currentUser.email.split('@')[0]}
                     </span>
-                    <span className="text-xs text-slate-500 capitalize leading-tight">
+                    <span className="text-xs text-slate-400 capitalize leading-tight">
                       {currentUser.role}
                     </span>
                   </div>
                 </div>
                 <button 
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors font-medium"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors font-medium"
                   onClick={handleLogout}
                 >
                   <LogOut size={18} />
@@ -93,7 +93,7 @@ const Navbar = () => {
               <div className="flex gap-2">
                 <button 
                   onClick={() => navigate("/login")}
-                  className="px-5 py-2 font-medium text-slate-700 hover:bg-slate-100 rounded-xl transition-colors"
+                  className="px-5 py-2 font-medium text-slate-300 hover:bg-slate-700 rounded-xl transition-colors"
                 >
                   Log in
                 </button>

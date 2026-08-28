@@ -4,9 +4,9 @@ import { ErrorBoundary } from 'react-error-boundary';
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-red-50 p-6 text-center">
-      <div className="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full border border-red-100">
+      <div className="bg-slate-900 p-8 rounded-2xl shadow-xl max-w-lg w-full border border-red-100">
         <h2 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h2>
-        <p className="text-gray-700 mb-6 bg-red-50 p-4 rounded-lg font-mono text-sm text-left overflow-auto">
+        <p className="text-slate-300 mb-6 bg-red-50 p-4 rounded-lg font-mono text-sm text-left overflow-auto">
           {error.message}
         </p>
         <button 

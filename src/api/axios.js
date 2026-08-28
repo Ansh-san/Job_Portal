@@ -21,4 +21,17 @@ api.interceptors.request.use(
   }
 );
 
+// Response interceptor to handle 401 Unauthorized globally
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Token is invalid, expired, or user was deleted
+      localStorage.removeItem('userInfo');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

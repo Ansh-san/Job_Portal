@@ -23,6 +23,31 @@ const userSchema = new mongoose.Schema({
   resumeUrl: {
     type: String,
   },
+  // Jobseeker Profile Fields
+  phone: {
+    type: String,
+  },
+  bio: {
+    type: String,
+  },
+  skills: {
+    type: [String],
+    default: [],
+  },
+  savedJobs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Job',
+  }],
+  // Employer Profile Fields
+  companyName: {
+    type: String,
+  },
+  companyDescription: {
+    type: String,
+  },
+  website: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

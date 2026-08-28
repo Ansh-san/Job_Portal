@@ -5,10 +5,12 @@ const {
   getMyApplications,
   getJobApplicants,
   updateApplicationStatus,
+  getEmployerAnalytics,
 } = require('../controllers/applicationController');
 const { protect, requireRole } = require('../middleware/authMiddleware');
 
 router.get('/me', protect, requireRole('jobseeker'), getMyApplications);
+router.get('/analytics/employer', protect, requireRole('employer'), getEmployerAnalytics);
 router.post('/:jobId', protect, requireRole('jobseeker'), applyForJob);
 
 router.get('/job/:jobId', protect, requireRole('employer'), getJobApplicants);

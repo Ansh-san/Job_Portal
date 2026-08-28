@@ -133,9 +133,86 @@ const updateApplicationStatus = async (req, res) => {
   }
 };
 
+// @desc    Get analytics for employer dashboard
+// @route   GET /api/applications/analytics/employer
+// @access  Private (Employer only)
+const getEmployerAnalytics = async (req, res) => {
+  try {
+    const employerId = req.user._id;
+
+    // Find all jobs posted by this employer
+    const jobs = await Job.find({ postedBy: employerId });
+    const jobIds = jobs.map(job => job._id);
+
+    // Get all applications for these jobs
+    const applications = await Application.find({ job: { $in: jobIds } });
+
+    const totalJobs = jobs.length;
+    const totalApplications = applications.length;
+
+    // Calculate status breakdown
+    const statusCounts = {
+      applied: 0,
+      shortlisted: 0,
+      hired: 0,
+      rejected: 0
+    };
+
+    applications.forEach(app => {
+      if (statusCounts[app.status] !== undefined) {
+        statusCounts[app.status]++;
+      }
+    });
+
+    // Funnel data for Recharts
+    const funnelData = [
+      { name: 'Applied', value: statusCounts.applied + statusCounts.shortlisted + statusCounts.hired + statusCounts.rejected }, // Total pipeline
+      { name: 'Shortlisted', value: statusCounts.shortlisted + statusCounts.hired }, // Those who made it past applied
+      { name: 'Hired', value: statusCounts.hired } // Final hires
+    ];
+
+    // Applications over time (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const recentApps = await Application.aggregate([
+      { 
+        $match: { 
+          job: { $in: jobIds },
+          appliedAt: { $gte: thirtyDaysAgo } 
+        } 
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$appliedAt" } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    // Format for Recharts AreaChart
+    const timelineData = recentApps.map(item => ({
+      date: item._id,
+      applications: item.count
+    }));
+
+    res.json({
+      totalJobs,
+      totalApplications,
+      statusCounts,
+      funnelData,
+      timelineData
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   applyForJob,
   getMyApplications,
   getJobApplicants,
   updateApplicationStatus,
+  getEmployerAnalytics
 };

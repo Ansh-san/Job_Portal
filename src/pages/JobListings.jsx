@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import jobService from '../api/jobService';
+import userService from '../api/userService';
 import toast from 'react-hot-toast';
 import { CardSkeleton } from '../components/Skeleton';
-import { Briefcase, MapPin, DollarSign, Search } from 'lucide-react';
+import { Briefcase, MapPin, DollarSign, Search, Bookmark } from 'lucide-react';
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([]);
@@ -18,6 +19,12 @@ const JobListings = () => {
     jobType: '',
     salaryRange: ''
   });
+
+  const [savedJobs, setSavedJobs] = useState([]);
+  
+  const userInfoString = localStorage.getItem('userInfo');
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+  const isJobseeker = userInfo?.role === 'jobseeker';
 
   const fetchJobs = useCallback(async () => {
     try {
@@ -35,12 +42,37 @@ const JobListings = () => {
   }, [filters, page]);
 
   useEffect(() => {
+    if (isJobseeker) {
+      userService.getUserProfile().then(data => {
+        if (data && data.savedJobs) {
+          setSavedJobs(data.savedJobs.map(j => j._id || j));
+        }
+      }).catch(err => console.error(err));
+    }
+  }, [isJobseeker]);
+
+  useEffect(() => {
     // Add a slight debounce to prevent fetching on every keystroke
     const delayDebounceFn = setTimeout(() => {
       fetchJobs();
     }, 300);
     return () => clearTimeout(delayDebounceFn);
   }, [fetchJobs]);
+
+  const handleSaveJob = async (e, jobId) => {
+    e.preventDefault();
+    if (!isJobseeker) {
+      toast.error('Please log in as a jobseeker to save jobs');
+      return;
+    }
+    try {
+      const res = await userService.toggleSaveJob(jobId);
+      setSavedJobs(res.savedJobs);
+      toast.success(res.message);
+    } catch (err) {
+      toast.error('Failed to save job');
+    }
+  };
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -50,7 +82,7 @@ const JobListings = () => {
   return (
     <div className="animate-fade-in relative">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-white to-primary-100/30 -z-10" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-slate-900 to-primary-100/30 -z-10" />
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-primary-200/40 blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 -ml-20 w-80 h-80 rounded-full bg-blue-200/40 blur-3xl -z-10" />
 
@@ -58,10 +90,10 @@ const JobListings = () => {
         
         {/* Header & Hero */}
         <div className="text-center space-y-4 max-w-2xl mx-auto animate-slide-up">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-100 tracking-tight">
             Discover Your Next <span className="text-primary-600">Great Opportunity</span>
           </h1>
-          <p className="text-lg text-slate-600">
+          <p className="text-lg text-slate-400">
             Browse through thousands of job listings from top companies and kickstart your career.
           </p>
         </div>
@@ -137,11 +169,11 @@ const JobListings = () => {
           </div>
         ) : jobs.length === 0 ? (
           <div className="glass p-16 text-center rounded-3xl space-y-4">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="text-slate-400" size={24} />
             </div>
-            <h3 className="text-xl font-bold text-slate-800">No jobs found</h3>
-            <p className="text-slate-500">Try adjusting your search filters to find what you're looking for.</p>
+            <h3 className="text-xl font-bold text-slate-200">No jobs found</h3>
+            <p className="text-slate-400">Try adjusting your search filters to find what you're looking for.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -156,21 +188,31 @@ const JobListings = () => {
                     <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-50 rounded-xl flex items-center justify-center border border-primary-100">
                       <span className="text-primary-700 font-bold text-xl">{job.company.charAt(0)}</span>
                     </div>
-                    <span className="bg-primary-50 text-primary-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                      {job.jobType}
-                    </span>
+                    <div className="flex gap-2">
+                      <span className="bg-primary-50 text-primary-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        {job.jobType}
+                      </span>
+                      {isJobseeker && (
+                        <button 
+                          onClick={(e) => handleSaveJob(e, job._id)}
+                          className={`p-1.5 rounded-full transition-colors ${savedJobs.includes(job._id) ? 'bg-blue-900 text-blue-600' : 'bg-slate-800 text-slate-400 hover:bg-slate-200'}`}
+                        >
+                          <Bookmark size={16} fill={savedJobs.includes(job._id) ? "currentColor" : "none"} />
+                        </button>
+                      )}
+                    </div>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-slate-900 mb-1 line-clamp-1">{job.title}</h3>
-                  <p className="text-slate-500 font-medium mb-6">{job.company}</p>
+                  <h3 className="text-xl font-bold text-slate-100 mb-1 line-clamp-1">{job.title}</h3>
+                  <p className="text-slate-400 font-medium mb-6">{job.company}</p>
                   
                   <div className="space-y-3 mb-8">
-                    <div className="flex items-center text-sm text-slate-600">
+                    <div className="flex items-center text-sm text-slate-400">
                       <MapPin size={16} className="mr-2 text-slate-400" />
                       {job.location}
                     </div>
                     {job.salaryRange && (
-                      <div className="flex items-center text-sm text-slate-600">
+                      <div className="flex items-center text-sm text-slate-400">
                         <DollarSign size={16} className="mr-2 text-slate-400" />
                         {job.salaryRange}
                       </div>
@@ -180,7 +222,7 @@ const JobListings = () => {
                 
                 <Link 
                   to={`/jobs/${job._id}`}
-                  className="w-full text-center py-2.5 rounded-xl bg-slate-50 text-primary-600 font-semibold border border-slate-200 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-200"
+                  className="w-full text-center py-2.5 rounded-xl bg-slate-800 text-primary-600 font-semibold border border-slate-700 hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all duration-200"
                 >
                   View Details
                 </Link>
@@ -199,8 +241,8 @@ const JobListings = () => {
             >
               Previous
             </button>
-            <span className="text-slate-600 font-medium px-4">
-              Page <span className="font-bold text-slate-900">{page}</span> of {totalPages}
+            <span className="text-slate-400 font-medium px-4">
+              Page <span className="font-bold text-slate-100">{page}</span> of {totalPages}
             </span>
             <button
               disabled={page === totalPages}

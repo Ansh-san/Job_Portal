@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { uploadResume } = require('../controllers/userController');
+const { uploadResume, toggleSaveJob, updateProfile, getUserProfile } = require('../controllers/userController');
 const { protect, requireRole } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
@@ -18,5 +18,9 @@ router.post(
   },
   uploadResume
 );
+
+router.post('/save-job/:id', protect, requireRole('jobseeker'), toggleSaveJob);
+router.put('/profile', protect, updateProfile);
+router.get('/profile', protect, getUserProfile);
 
 module.exports = router;
