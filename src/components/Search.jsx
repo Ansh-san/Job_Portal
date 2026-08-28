@@ -28,19 +28,8 @@ const Search = ({ onSearch }) => {
   };
 
   return (
-    <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: "2.5rem", padding: "0 1.5rem", boxSizing: "border-box" }}>
-      <div style={{
-        width: "100%",
-        maxWidth: "1280px",
-        background: "#fff",
-        borderRadius: "16px",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
-        padding: "1.25rem",
-        display: "flex",
-        alignItems: "center",
-        gap: "1rem",
-        flexWrap: "wrap",
-      }}>
+    <div className="w-full flex justify-center mt-10 px-6 box-border">
+      <div className="w-full max-w-7xl bg-slate-900 rounded-2xl shadow-lg border border-slate-800 p-5 flex items-center gap-4 flex-wrap">
         {/* Search Input */}
         <input
           type="text"
@@ -51,46 +40,18 @@ const Search = ({ onSearch }) => {
             setSearch(value);
             onSearch(value);
           }}
-          style={{
-            flex: "1 1 200px",
-            height: "52px",
-            padding: "0 1.25rem",
-            borderRadius: "10px",
-            border: "1px solid #d1d5db",
-            color: "#111",
-            fontSize: "0.95rem",
-            outline: "none",
-            minWidth: "0",
-          }}
+          className="flex-[1_1_200px] h-[52px] px-5 rounded-xl border border-slate-700 bg-slate-950 text-slate-200 text-[0.95rem] outline-none min-w-0 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
         />
 
         {/* Job Type */}
-        <select style={{
-          width: "180px",
-          height: "52px",
-          padding: "0 1rem",
-          borderRadius: "10px",
-          border: "1px solid #d1d5db",
-          color: "#111",
-          fontSize: "0.9rem",
-          background: "#fff",
-        }}>
+        <select className="w-[180px] h-[52px] px-4 rounded-xl border border-slate-700 bg-slate-950 text-slate-200 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none">
           {jobTypes.map((type) => (
             <option key={type}>{type}</option>
           ))}
         </select>
 
         {/* Experience */}
-        <select style={{
-          width: "180px",
-          height: "52px",
-          padding: "0 1rem",
-          borderRadius: "10px",
-          border: "1px solid #d1d5db",
-          color: "#111",
-          fontSize: "0.9rem",
-          background: "#fff",
-        }}>
+        <select className="w-[180px] h-[52px] px-4 rounded-xl border border-slate-700 bg-slate-950 text-slate-200 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none">
           {experienceLevels.map((level) => (
             <option key={level}>{level}</option>
           ))}
@@ -99,20 +60,7 @@ const Search = ({ onSearch }) => {
         {/* Search Button */}
         <button
           onClick={handleSearch}
-          style={{
-            height: "52px",
-            padding: "0 2rem",
-            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-            color: "#fff",
-            border: "none",
-            borderRadius: "10px",
-            fontWeight: 700,
-            fontSize: "0.95rem",
-            cursor: "pointer",
-            transition: "opacity 0.2s",
-          }}
-          onMouseOver={(e) => (e.currentTarget.style.opacity = "0.88")}
-          onMouseOut={(e) => (e.currentTarget.style.opacity = "1")}
+          className="h-[52px] px-8 bg-gradient-to-br from-indigo-500 to-violet-500 hover:opacity-90 text-white rounded-xl font-bold text-[0.95rem] cursor-pointer transition-opacity border-none"
         >
           Search
         </button>
